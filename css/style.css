@@ -1,0 +1,754 @@
+/**
+ * 経過観察アンケートアプリ スタイルシート
+ * 高齢者向け：落ち着いた配色、安心感のあるデザイン
+ */
+
+/* ===== CSS変数 ===== */
+:root {
+    /* 落ち着いた統一カラーパレット（青系） */
+    --color-bg: #F5F7FA;
+    --color-bg-chat: #E3EBF3;
+    --color-text: #2C3E50;
+    --color-text-secondary: #5D6D7E;
+    --color-text-light: #8899A6;
+
+    /* メインカラー：落ち着いた青系 */
+    --color-primary: #3B7CB8;
+    --color-primary-light: #E8F1F8;
+    --color-primary-dark: #2C5F8A;
+
+    /* 回答・確定 */
+    --color-answer: #3B7CB8;
+    --color-answer-text: #FFFFFF;
+    --color-confirm: #4A8FBA;
+
+    /* その他 */
+    --color-white: #FFFFFF;
+    --color-border: #C8D4E0;
+    --color-error: #C54B4B;
+
+    /* フォントサイズ */
+    --font-size-h1: 26px;
+    --font-size-body: 20px;
+    --font-size-button: 19px;
+    --font-size-small: 15px;
+    --font-size-vas: 44px;
+
+    /* 間隔 */
+    --spacing-xs: 8px;
+    --spacing-sm: 12px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+
+    /* ボタン・角丸 */
+    --btn-min-height: 54px;
+    --border-radius: 12px;
+    --border-radius-large: 20px;
+}
+
+/* ===== リセット & ベース ===== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN',
+                 'Hiragino Sans', Meiryo, sans-serif;
+    font-size: var(--font-size-body);
+    line-height: 1.6;
+    color: var(--color-text);
+    background-color: var(--color-bg);
+}
+
+/* ===== 画面切り替え ===== */
+.screen {
+    display: none;
+    height: 100%;
+}
+
+.screen.active {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===== 共通テキスト ===== */
+h1 {
+    font-size: var(--font-size-h1);
+    font-weight: bold;
+    color: var(--color-primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.description {
+    font-size: var(--font-size-body);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-lg);
+    line-height: 1.7;
+}
+
+/* ===== ボタン共通 ===== */
+button {
+    font-family: inherit;
+    font-size: var(--font-size-button);
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    border-radius: var(--border-radius);
+    transition: all 0.15s ease;
+    min-height: var(--btn-min-height);
+    padding: var(--spacing-md) var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+.btn-primary {
+    background-color: var(--color-primary);
+    color: white;
+    box-shadow: 0 2px 8px rgba(59, 124, 184, 0.3);
+}
+
+.btn-primary:hover {
+    background-color: var(--color-primary-dark);
+}
+
+.btn-secondary {
+    background-color: var(--color-white);
+    color: var(--color-text);
+    border: 2px solid var(--color-border);
+}
+
+.btn-secondary:hover {
+    border-color: var(--color-primary);
+    background-color: var(--color-primary-light);
+}
+
+.btn-large {
+    min-height: 76px;
+    font-size: 21px;
+    border-radius: var(--border-radius-large);
+}
+
+/* ===== チャット画面 ===== */
+#screen-chat {
+    background-color: var(--color-bg-chat);
+}
+
+.chat-header {
+    background-color: var(--color-primary);
+    color: white;
+    padding: var(--spacing-sm) var(--spacing-md);
+    text-align: center;
+    flex-shrink: 0;
+}
+
+#chat-progress {
+    font-size: var(--font-size-body);
+    font-weight: 600;
+}
+
+.chat-header .progress-bar {
+    height: 6px;
+    background-color: rgba(255,255,255,0.3);
+    border-radius: 3px;
+    margin-top: var(--spacing-xs);
+    overflow: hidden;
+}
+
+#progress-fill {
+    height: 100%;
+    background-color: white;
+    transition: width 0.3s ease;
+    border-radius: 3px;
+}
+
+.chat-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--spacing-md);
+    scroll-behavior: smooth;
+}
+
+.chat-message {
+    margin-bottom: var(--spacing-lg);
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 質問バブル（左側） */
+.question-bubble {
+    background-color: var(--color-white);
+    border-radius: 4px var(--border-radius-large) var(--border-radius-large) var(--border-radius-large);
+    padding: var(--spacing-md) var(--spacing-lg);
+    max-width: 88%;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    font-size: var(--font-size-body);
+    line-height: 1.6;
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+}
+
+/* 回答エリア */
+.answer-area {
+    margin-top: var(--spacing-sm);
+    padding-left: var(--spacing-xs);
+}
+
+/* 選択肢ボタン */
+.options-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.option-btn {
+    background-color: var(--color-white);
+    color: var(--color-text);
+    border: 2px solid var(--color-border);
+    border-radius: 28px;
+    padding: var(--spacing-sm) var(--spacing-md);
+    min-height: 52px;
+    font-size: var(--font-size-body);
+    font-weight: normal;
+    text-align: left;
+    flex-direction: row;
+    justify-content: flex-start;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.option-btn:hover {
+    border-color: var(--color-primary);
+    background-color: var(--color-primary-light);
+}
+
+.option-btn.selected {
+    background-color: var(--color-answer);
+    color: var(--color-answer-text);
+    border-color: var(--color-answer);
+}
+
+/* 修正モードでの既存回答（薄青） */
+.option-btn.selected-previous {
+    background-color: var(--color-primary-light);
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+/* 選択時のフラッシュアニメーション */
+.option-btn.selecting {
+    background-color: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+    transform: scale(0.98);
+}
+
+/* 回答エリアのフェードアニメーション */
+.answer-area.fading-out {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.answer-area.fading-in {
+    animation: fadeInAnswer 0.2s ease;
+}
+
+@keyframes fadeInAnswer {
+    from {
+        opacity: 0;
+        transform: translateX(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* 回答済みバブル（右側） */
+.answer-bubble {
+    background-color: var(--color-answer);
+    color: var(--color-answer-text);
+    border-radius: var(--border-radius-large) 4px var(--border-radius-large) var(--border-radius-large);
+    padding: var(--spacing-sm) var(--spacing-md);
+    margin-left: auto;
+    max-width: 85%;
+    box-shadow: 0 2px 8px rgba(59, 124, 184, 0.25);
+    font-size: var(--font-size-body);
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.answer-bubble:hover {
+    opacity: 0.9;
+}
+
+.answer-bubble .edit-hint {
+    font-size: var(--font-size-small);
+    opacity: 0.8;
+    margin-top: 4px;
+}
+
+/* VASスライダー */
+.vas-area {
+    background-color: var(--color-white);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border: 1px solid var(--color-border);
+}
+
+.vas-value-display {
+    text-align: center;
+    margin-bottom: var(--spacing-md);
+}
+
+.vas-value-input {
+    font-size: var(--font-size-vas);
+    font-weight: bold;
+    color: var(--color-primary);
+    width: 180px;
+    text-align: center;
+    border: 2px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-sm);
+    background-color: var(--color-white);
+    -moz-appearance: textfield;
+}
+
+.vas-value-input::placeholder {
+    color: var(--color-text-light);
+    font-size: 24px;
+}
+
+.vas-value-input::-webkit-outer-spin-button,
+.vas-value-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.vas-value-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 16px;
+    border-radius: 8px;
+    background: linear-gradient(to right,
+        var(--color-primary-light) 0%,
+        var(--color-primary) 100%
+    );
+    outline: none;
+    margin: var(--spacing-md) 0;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 4px solid white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 4px solid white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+}
+
+.vas-scale-numbers {
+    display: flex;
+    justify-content: space-between;
+    font-size: var(--font-size-body);
+    font-weight: bold;
+    color: var(--color-text);
+    margin-top: var(--spacing-xs);
+}
+
+.vas-labels {
+    margin-top: var(--spacing-sm);
+    font-size: var(--font-size-small);
+    color: var(--color-text-secondary);
+    line-height: 1.4;
+}
+
+.vas-labels div {
+    margin-bottom: 4px;
+}
+
+.vas-confirm-btn {
+    margin-top: var(--spacing-md);
+    background-color: var(--color-primary);
+    color: white;
+    border-radius: 28px;
+}
+
+.vas-confirm-btn:disabled {
+    background-color: var(--color-border);
+    cursor: not-allowed;
+}
+
+/* テキスト入力 */
+.text-input-area {
+    background-color: var(--color-white);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border: 1px solid var(--color-border);
+}
+
+.text-input {
+    width: 100%;
+    font-family: inherit;
+    font-size: var(--font-size-body);
+    padding: var(--spacing-sm);
+    border: 2px solid var(--color-border);
+    border-radius: var(--border-radius);
+    resize: none;
+    min-height: 100px;
+}
+
+.text-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+.text-confirm-btn {
+    margin-top: var(--spacing-sm);
+    background-color: var(--color-primary);
+    color: white;
+    border-radius: 28px;
+}
+
+/* 診察券番号入力 */
+.id-input-area {
+    background-color: var(--color-white);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border: 1px solid var(--color-border);
+}
+
+.id-input {
+    width: 100%;
+    font-size: var(--font-size-body);
+    padding: var(--spacing-md);
+    border: 2px solid var(--color-border);
+    border-radius: var(--border-radius);
+    text-align: center;
+    background-color: var(--color-white);
+}
+
+.id-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+.id-confirm-btn {
+    margin-top: var(--spacing-sm);
+    background-color: var(--color-primary);
+    color: white;
+    border-radius: 28px;
+}
+
+.id-confirm-btn:disabled {
+    background-color: var(--color-border);
+    cursor: not-allowed;
+}
+
+.input-error {
+    color: var(--color-error);
+    font-size: var(--font-size-small);
+    margin-top: var(--spacing-xs);
+    text-align: center;
+}
+
+/* 確定エリア */
+.confirm-area {
+    padding: var(--spacing-md);
+    background-color: var(--color-white);
+    border-top: 1px solid var(--color-border);
+}
+
+.btn-confirm {
+    background-color: var(--color-confirm);
+    color: white;
+    font-size: 22px;
+    min-height: 60px;
+    border-radius: 30px;
+    box-shadow: 0 2px 8px rgba(74, 143, 186, 0.3);
+}
+
+.btn-confirm:hover {
+    background-color: #3A7BA5;
+}
+
+/* ===== 結果画面 ===== */
+#screen-result {
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(180deg, var(--color-white) 0%, var(--color-bg) 100%);
+}
+
+.result-container {
+    width: 100%;
+    max-width: 480px;
+    padding: var(--spacing-lg);
+    text-align: center;
+}
+
+#qrcode-container {
+    display: flex;
+    justify-content: center;
+    margin: var(--spacing-lg) 0;
+    padding: var(--spacing-md);
+    background-color: var(--color-white);
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+#qrcode-container img,
+#qrcode-container canvas {
+    max-width: 260px;
+    height: auto;
+}
+
+.result-text {
+    font-size: var(--font-size-small);
+    color: var(--color-text-secondary);
+    white-space: pre-line;
+    margin-bottom: var(--spacing-lg);
+    padding: var(--spacing-md);
+    background-color: var(--color-white);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-border);
+}
+
+/* ===== 確認モーダル ===== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease;
+}
+
+.modal-overlay[hidden] {
+    display: none;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background-color: var(--color-white);
+    border-radius: var(--border-radius-large);
+    padding: var(--spacing-lg);
+    max-width: 340px;
+    width: 90%;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    text-align: center;
+}
+
+.modal-message {
+    font-size: var(--font-size-body);
+    color: var(--color-text);
+    margin-bottom: var(--spacing-lg);
+    line-height: 1.7;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.modal-buttons button {
+    flex: 1;
+    min-height: 52px;
+    border-radius: 26px;
+}
+
+.modal-note {
+    font-size: var(--font-size-small);
+    color: var(--color-text-secondary);
+}
+
+/* ===== 同意書モーダル ===== */
+.consent-modal-content {
+    max-width: 400px;
+    width: 92%;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.consent-scroll-area {
+    max-height: 50vh;
+    overflow-y: auto;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    background-color: var(--color-bg);
+    text-align: left;
+}
+
+.consent-text {
+    font-size: var(--font-size-body);
+    color: var(--color-text);
+    line-height: 1.7;
+    margin-bottom: var(--spacing-md);
+}
+
+.consent-separator {
+    text-align: center;
+    font-size: var(--font-size-body);
+    color: var(--color-text-light);
+    line-height: 1.8;
+    margin: var(--spacing-lg) 0;
+}
+
+.consent-bottom-text {
+    margin-bottom: 0;
+    font-weight: 600;
+    color: var(--color-primary);
+}
+
+.consent-checkbox-area {
+    margin-bottom: var(--spacing-md);
+}
+
+.consent-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    font-size: var(--font-size-body);
+    color: var(--color-text);
+    cursor: pointer;
+}
+
+.consent-label input[type="checkbox"] {
+    width: 24px;
+    height: 24px;
+    accent-color: var(--color-primary);
+    cursor: pointer;
+}
+
+.consent-label input[type="checkbox"]:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.consent-label input[type="checkbox"]:disabled + span {
+    color: var(--color-text-light);
+}
+
+#consent-confirm-btn {
+    border-radius: 26px;
+}
+
+#consent-confirm-btn:disabled {
+    background-color: var(--color-border);
+    cursor: not-allowed;
+}
+
+/* ===== 送信ボタン ===== */
+.btn-submit {
+    margin-bottom: var(--spacing-md);
+}
+
+.btn-submit.submitted {
+    background-color: var(--color-border);
+    color: var(--color-text-secondary);
+    box-shadow: none;
+    cursor: default;
+}
+
+.btn-submit.submitted:hover {
+    background-color: var(--color-border);
+}
+
+.btn-submit.submitted:active {
+    transform: none;
+}
+
+/* ===== レスポンシブ対応 ===== */
+@media (max-width: 480px) {
+    :root {
+        --font-size-body: 18px;
+        --font-size-button: 17px;
+        --font-size-vas: 38px;
+    }
+
+    .question-bubble {
+        max-width: 92%;
+    }
+
+    .answer-bubble {
+        max-width: 80%;
+    }
+}
+
+@media (min-width: 768px) {
+    .chat-container {
+        max-width: 580px;
+        margin: 0 auto;
+    }
+}
+
+/* ===== アクセシビリティ ===== */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .chat-container {
+        scroll-behavior: auto;
+    }
+}

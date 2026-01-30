@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>経過観察アンケート</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- チャット形式アンケート -->
+    <div id="screen-chat" class="screen active">
+        <!-- ヘッダー -->
+        <div class="chat-header">
+            <span id="chat-progress">0 / 14</span>
+            <div class="progress-bar">
+                <div id="progress-fill"></div>
+            </div>
+        </div>
+
+        <!-- チャットエリア -->
+        <div id="chat-container" class="chat-container">
+            <!-- 動的に質問が追加される -->
+        </div>
+
+        <!-- 確定ボタン（全問回答後に表示） -->
+        <div id="confirm-area" class="confirm-area" hidden>
+            <button id="btn-confirm" class="btn-confirm">確定する</button>
+        </div>
+    </div>
+
+    <!-- 結果画面 -->
+    <div id="screen-result" class="screen">
+        <div class="result-container">
+            <h1>回答が完了しました</h1>
+            <p class="description">ご回答いただきましてありがとうございました。</p>
+            <p id="result-text" class="result-text"></p>
+            <button id="btn-submit" class="btn-primary btn-large btn-submit">結果を送信</button>
+            <button id="btn-restart" class="btn-primary btn-large">最初に戻る</button>
+        </div>
+    </div>
+
+    <!-- 確認モーダル -->
+    <div id="confirm-modal" class="modal-overlay" hidden>
+        <div class="modal-content">
+            <p class="modal-message">回答内容を削除して最初の画面に戻ります。<br>よろしいですか？</p>
+            <div class="modal-buttons">
+                <button id="modal-cancel" class="btn-secondary">キャンセル</button>
+                <button id="modal-ok" class="btn-primary">はい</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 同意書モーダル -->
+    <div id="consent-modal" class="modal-overlay">
+        <div class="modal-content consent-modal-content">
+            <div class="consent-scroll-area" id="consent-scroll-area">
+                <p class="consent-text">これは説明・同意文書のサンプルです。一番下までスクロールして進めてください。</p>
+                <p class="consent-separator">｜<br>｜<br>｜<br>｜<br>｜<br>｜<br>｜<br>｜<br>｜<br>｜<br>｜<br>｜<br>｜<br>｜<br>｜<br>｜<br>｜<br>｜<br>｜<br>｜</p>
+                <p class="consent-text consent-bottom-text">最後まで読むと同意のチェックを入れられます。</p>
+            </div>
+            <div class="consent-checkbox-area">
+                <label class="consent-label" id="consent-label">
+                    <input type="checkbox" id="consent-checkbox" disabled>
+                    <span>上記の内容に同意します</span>
+                </label>
+            </div>
+            <button id="consent-confirm-btn" class="btn-primary" disabled>確定</button>
+        </div>
+    </div>
+
+    <!-- 送信確認モーダル -->
+    <div id="submit-modal" class="modal-overlay" hidden>
+        <div class="modal-content">
+            <p class="modal-message">結果を送信します。よろしいですか？<br><span class="modal-note">（今回はサンプルのため実際には内容は送信されません）</span></p>
+            <div class="modal-buttons">
+                <button id="submit-cancel" class="btn-secondary">戻る</button>
+                <button id="submit-ok" class="btn-primary">送信する</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/csv-parser.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
