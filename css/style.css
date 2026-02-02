@@ -588,8 +588,8 @@ input[type="range"]::-moz-range-thumb {
     background-color: var(--color-white);
     border-radius: var(--border-radius-large);
     padding: var(--spacing-lg);
-    max-width: 340px;
-    width: 90%;
+    max-width: 420px;
+    width: 92%;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
     text-align: center;
 }
@@ -619,8 +619,8 @@ input[type="range"]::-moz-range-thumb {
 
 /* ===== 同意書モーダル ===== */
 .consent-modal-content {
-    max-width: 400px;
-    width: 92%;
+    max-width: 480px;
+    width: 94%;
     max-height: 85vh;
     display: flex;
     flex-direction: column;

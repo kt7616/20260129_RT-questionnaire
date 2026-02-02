@@ -1,4 +1,4 @@
-﻿question_id,question_type,question_text,required,options,min_value,max_value,min_label,max_label,section,help_text
+﻿question_id,question_type,question_text,required,options,min_value,max_value,min_label,max_label,section,help_text,inputmode
 IPSS1,single,この1ヶ月の間に、尿をした後にまだ尿が残っている感じがありましたか？,true,0:まったくなかった|1:5回に1回より少ない|2:2回に1回より少ない|3:2回に1回くらい|4:2回に1回より多い|5:ほとんどいつも,,,,,IPSS（排尿症状）,残尿感についてお答えください
 IPSS2,single,この1ヶ月の間に、尿をしてから2時間以内にもう一度しなければならないことがありましたか？,true,0:まったくなかった|1:5回に1回より少ない|2:2回に1回より少ない|3:2回に1回くらい|4:2回に1回より多い|5:ほとんどいつも,,,,,IPSS（排尿症状）,頻尿についてお答えください
 IPSS3,single,この1ヶ月の間に、尿をしている間に尿が何度もとぎれることがありましたか？,true,0:まったくなかった|1:5回に1回より少ない|2:2回に1回より少ない|3:2回に1回くらい|4:2回に1回より多い|5:ほとんどいつも,,,,,IPSS（排尿症状）,尿線途絶についてお答えください

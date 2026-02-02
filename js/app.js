@@ -153,12 +153,12 @@ function addPatientIdQuestion() {
     messageDiv.id = 'msg-patient-id';
 
     messageDiv.innerHTML = `
-        <div class="question-bubble">診察券番号を入力してください</div>
+        <div class="question-bubble">診察券番号を入力してください（ハイフン不要、数値のみ入力）</div>
         <div class="answer-area">
             <div class="id-input-area">
                 <input type="text" class="id-input" id="patient-id-input"
                        placeholder="例: 01234567" maxlength="20"
-                       pattern="[A-Za-z0-9]+" autocomplete="off" inputmode="latin">
+                       pattern="[0-9]+" autocomplete="off" inputmode="numeric">
                 <div class="input-error" id="id-error" hidden></div>
                 <button class="id-confirm-btn" id="btn-id-confirm" disabled>決定</button>
             </div>
@@ -176,7 +176,7 @@ function addPatientIdQuestion() {
     }
 
     input.addEventListener('input', (e) => {
-        e.target.value = e.target.value.replace(/[^A-Za-z0-9]/g, '');
+        e.target.value = e.target.value.replace(/[^0-9]/g, '');
         error.hidden = true;
         updateButtonState();
     });
@@ -207,8 +207,8 @@ function confirmPatientId() {
         return;
     }
 
-    if (!/^[A-Za-z0-9]+$/.test(value)) {
-        error.textContent = '半角英数字のみ入力できます';
+    if (!/^[0-9]+$/.test(value)) {
+        error.textContent = '半角数字のみ入力できます';
         error.hidden = false;
         return;
     }
@@ -249,7 +249,7 @@ window.editPatientId = function() {
         <div class="id-input-area">
             <input type="text" class="id-input" id="patient-id-input"
                    value="${AppState.patientId}" maxlength="20"
-                   pattern="[A-Za-z0-9]+" autocomplete="off" inputmode="latin">
+                   pattern="[0-9]+" autocomplete="off" inputmode="numeric">
             <div class="input-error" id="id-error" hidden></div>
             <button class="id-confirm-btn" id="btn-id-confirm">決定</button>
         </div>
@@ -265,7 +265,7 @@ window.editPatientId = function() {
     updateButtonState();
 
     input.addEventListener('input', (e) => {
-        e.target.value = e.target.value.replace(/[^A-Za-z0-9]/g, '');
+        e.target.value = e.target.value.replace(/[^0-9]/g, '');
         error.hidden = true;
         updateButtonState();
     });
@@ -381,11 +381,13 @@ function createVasArea(question, index) {
 
 /**
  * テキスト入力エリア
+ * inputmodeプロパティ: numeric(半角数字), text(日本語), email, tel, url など
  */
 function createTextArea(question, index) {
+    const inputMode = question.inputmode || 'text';
     return `
         <div class="text-input-area">
-            <textarea class="text-input" id="text-input-${index}" placeholder="ここに入力してください"></textarea>
+            <textarea class="text-input" id="text-input-${index}" placeholder="ここに入力してください" inputmode="${inputMode}"></textarea>
             <button class="text-confirm-btn" data-index="${index}" id="text-confirm-${index}">決定</button>
         </div>
     `;
