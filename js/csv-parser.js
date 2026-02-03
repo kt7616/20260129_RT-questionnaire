@@ -108,7 +108,7 @@ function parseCSVLine(line) {
  */
 async function loadDefaultTemplate() {
     try {
-        const response = await fetch('templates/ipss-eq5d.csv');
+        const response = await fetch('templates/sample.csv');
         if (!response.ok) {
             throw new Error('テンプレートファイルが見つかりません');
         }

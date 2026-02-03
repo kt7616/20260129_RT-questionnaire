@@ -10,7 +10,8 @@ const AppState = {
     answers: {},
     currentQuestionIndex: -1,
     totalAnswered: 0,
-    deletedQuestionIndex: -1
+    deletedQuestionIndex: -1,
+    isEditing: false
 };
 
 // DOM要素キャッシュ
@@ -49,6 +50,7 @@ function resetState() {
     AppState.currentQuestionIndex = -1;
     AppState.totalAnswered = 0;
     AppState.deletedQuestionIndex = -1;
+    AppState.isEditing = false;
     elements.chatContainer.innerHTML = '';
     elements.confirmArea.hidden = true;
     updateProgress();
@@ -76,6 +78,9 @@ function cacheElements() {
         consentScrollArea: document.getElementById('consent-scroll-area'),
         consentCheckbox: document.getElementById('consent-checkbox'),
         consentConfirmBtn: document.getElementById('consent-confirm-btn'),
+        btnShowConsent: document.getElementById('btn-show-consent'),
+        consentViewModal: document.getElementById('consent-view-modal'),
+        consentViewCloseBtn: document.getElementById('consent-view-close-btn'),
         submitModal: document.getElementById('submit-modal'),
         submitCancel: document.getElementById('submit-cancel'),
         submitOk: document.getElementById('submit-ok')
@@ -100,6 +105,10 @@ function setupEventListeners() {
     elements.btnSubmit.addEventListener('click', showSubmitModal);
     elements.submitCancel.addEventListener('click', hideSubmitModal);
     elements.submitOk.addEventListener('click', handleSubmit);
+
+    // 説明・同意文書閲覧モーダル
+    elements.btnShowConsent.addEventListener('click', showConsentViewModal);
+    elements.consentViewCloseBtn.addEventListener('click', hideConsentViewModal);
 }
 
 /**
@@ -140,7 +149,7 @@ function handleRestart() {
 function updateProgress() {
     const total = AppState.questions.length + 1;
     const answered = AppState.totalAnswered + (AppState.patientId ? 1 : 0);
-    elements.chatProgress.textContent = `${answered} / ${total}`;
+    elements.chatProgress.textContent = `進行状況：${answered} / ${total}`;
     elements.progressFill.style.width = `${(answered / total) * 100}%`;
 }
 
@@ -214,6 +223,7 @@ function confirmPatientId() {
     }
 
     AppState.patientId = value;
+    AppState.isEditing = false;
 
     const msgDiv = document.getElementById('msg-patient-id');
     const answerArea = msgDiv.querySelector('.answer-area');
@@ -240,6 +250,10 @@ function confirmPatientId() {
  * 診察券番号を編集
  */
 window.editPatientId = function() {
+    // 編集中は他の修正を受け付けない
+    if (AppState.isEditing) return;
+    AppState.isEditing = true;
+
     deleteLatestUnansweredQuestion();
 
     const msgDiv = document.getElementById('msg-patient-id');
@@ -492,7 +506,13 @@ function setupSingleChoiceListeners(index) {
 function setupMultipleChoiceListeners(question, index) {
     const buttons = document.querySelectorAll(`[data-index="${index}"][data-multi="true"]`);
     const confirmBtn = document.getElementById(`multi-confirm-${index}`);
+
+    // 既存の選択状態を復元
     let selected = [];
+    const existingValue = AppState.answers[question.question_id];
+    if (existingValue !== undefined && existingValue !== '') {
+        selected = String(existingValue).split(',');
+    }
 
     buttons.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -589,6 +609,7 @@ function confirmAnswer(index, value) {
 
     AppState.answers[question.question_id] = value;
     if (isNewAnswer) AppState.totalAnswered++;
+    AppState.isEditing = false;
 
     const answerArea = document.getElementById(`answer-area-${index}`);
     answerArea.innerHTML = createAnswerBubble(question, value, index);
@@ -606,6 +627,7 @@ function confirmAnswerWithAnimation(index, value) {
 
     AppState.answers[question.question_id] = value;
     if (isNewAnswer) AppState.totalAnswered++;
+    AppState.isEditing = false;
 
     const answerArea = document.getElementById(`answer-area-${index}`);
     answerArea.classList.remove('fading-out');
@@ -679,6 +701,10 @@ function showConfirmButton() {
  * 回答を編集
  */
 window.editAnswer = function(index) {
+    // 編集中は他の修正を受け付けない
+    if (AppState.isEditing) return;
+    AppState.isEditing = true;
+
     const question = AppState.questions[index];
     const answerArea = document.getElementById(`answer-area-${index}`);
 
@@ -703,6 +729,27 @@ window.editAnswer = function(index) {
         if (existingValue !== undefined) {
             const btn = document.querySelector(`[data-index="${index}"][data-value="${existingValue}"]`);
             if (btn) btn.classList.add('selected-previous');
+        }
+    }
+
+    // 複数選択: 既存回答を選択状態で表示
+    if (question.question_type === 'multiple') {
+        const existingValue = AppState.answers[question.question_id];
+        if (existingValue !== undefined && existingValue !== '') {
+            const selectedValues = String(existingValue).split(',');
+            selectedValues.forEach(value => {
+                const btn = document.querySelector(`[data-index="${index}"][data-value="${value}"][data-multi="true"]`);
+                if (btn) btn.classList.add('selected');
+            });
+        }
+    }
+
+    // テキスト入力: 既存回答を復元
+    if (question.question_type === 'text') {
+        const existingValue = AppState.answers[question.question_id];
+        if (existingValue !== undefined && existingValue !== '(未入力)') {
+            const textarea = document.getElementById(`text-input-${index}`);
+            if (textarea) textarea.value = existingValue;
         }
     }
 
@@ -846,6 +893,20 @@ function handleSubmit() {
     elements.btnSubmit.textContent = '送信が完了しました';
     elements.btnSubmit.classList.add('submitted');
     elements.btnSubmit.disabled = true;
+}
+
+/**
+ * 説明・同意文書閲覧モーダルを表示
+ */
+function showConsentViewModal() {
+    elements.consentViewModal.hidden = false;
+}
+
+/**
+ * 説明・同意文書閲覧モーダルを非表示
+ */
+function hideConsentViewModal() {
+    elements.consentViewModal.hidden = true;
 }
 
 /**
